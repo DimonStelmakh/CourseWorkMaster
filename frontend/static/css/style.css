@@ -1,0 +1,204 @@
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --trust-high: #198754;
+    --trust-medium: #ffc107;
+    --trust-low: #dc3545;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    font-weight: 500;
+}
+
+.trust-score-display {
+    position: relative;
+}
+
+.trust-score-display h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+#trust-score-card.trust-high {
+    border-left: 4px solid var(--trust-high);
+}
+
+#trust-score-card.trust-medium {
+    border-left: 4px solid var(--trust-medium);
+}
+
+#trust-score-card.trust-low {
+    border-left: 4px solid var(--trust-low);
+}
+
+.trust-high .trust-score-display h2 {
+    color: var(--trust-high);
+}
+
+.trust-medium .trust-score-display h2 {
+    color: var(--trust-medium);
+}
+
+.trust-low .trust-score-display h2 {
+    color: var(--trust-low);
+}
+
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.badge {
+    font-weight: 500;
+}
+
+.event-success { background-color: var(--success-color); }
+.event-warning { background-color: var(--warning-color); color: #000; }
+.event-danger { background-color: var(--danger-color); }
+.event-info { background-color: var(--primary-color); }
+
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.biometric-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    z-index: 1000;
+    display: none;
+}
+
+.biometric-indicator.active {
+    display: block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .trust-score-display h2 {
+        font-size: 2.5rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+
+#totp-qr {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    border-radius: 10px;
+    background: white;
+}
+
+#backup-codes {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+}
+
+#backup-codes code {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 10px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 3px;
+}
+
+.navbar-brand i {
+    margin-right: 5px;
+}
+
+.alert {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#trust-history-chart {
+    max-height: 200px;
+}
+
+#sessions-table td,
+#events-table td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.footer {
+    margin-top: auto;
+}

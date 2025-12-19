@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passive Biometric Auth - Система пасивної біометричної автентифікації</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" id="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock"></i> PBA System
+            </a>
+            <div class="navbar-nav ms-auto" id="nav-items">
+                <!-- Dynamic navigation items -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4" id="main-content">
+        <!-- Login Form (Default View) -->
+        <div id="login-view" class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4><i class="bi bi-box-arrow-in-right"></i> Вхід</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Логін</label>
+                                <input type="text" class="form-control" id="username" required 
+                                       autocomplete="username">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="password" required
+                                       autocomplete="current-password">
+                            </div>
+                            <div class="alert alert-danger d-none" id="login-error"></div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-box-arrow-in-right"></i> Увійти
+                            </button>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <a href="#" id="show-register">Зареєструватись</a> |
+                            <a href="#" id="show-reset">Забули пароль?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="register-view" class="row justify-content-center d-none">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white text-center">
+                        <h4><i class="bi bi-person-plus"></i> Реєстрація</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="register-form">
+                            <div class="mb-3">
+                                <label for="reg-username" class="form-label">Логін</label>
+                                <input type="text" class="form-control" id="reg-username" required minlength="3">
+                            </div>
+                            <div class="mb-3">
+                                <label for="reg-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="reg-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reg-password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="reg-password" required minlength="8">
+                                <small class="text-muted">Мінімум 8 символів, велика літера, цифра, спецсимвол</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reg-password2" class="form-label">Підтвердження пароля</label>
+                                <input type="password" class="form-control" id="reg-password2" required>
+                            </div>
+                            <div class="alert alert-danger d-none" id="register-error"></div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-person-plus"></i> Зареєструватись
+                            </button>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <a href="#" id="show-login">Вже маєте акаунт? Увійти</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgot-password-view" class="row justify-content-center d-none">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white text-center">
+                        <h4><i class="bi bi-envelope"></i> Відновлення пароля</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted text-center">
+                            Введіть email, на який зареєстрований акаунт. Ми надішлемо посилання для скидання пароля.
+                        </p>
+                        <form id="forgot-password-form">
+                            <div class="mb-3">
+                                <label for="reset-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="reset-email" required>
+                            </div>
+                            <div class="alert alert-danger d-none" id="forgot-error"></div>
+                            <div class="alert alert-success d-none" id="forgot-success"></div>
+                            <button type="submit" class="btn btn-info w-100 text-white">
+                                <i class="bi bi-send"></i> Надіслати посилання
+                            </button>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <a href="#" id="show-login-from-forgot">Повернутися до входу</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reset Password Form (from email link) -->
+        <div id="reset-password-view" class="row justify-content-center d-none">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-dark text-center">
+                        <h4><i class="bi bi-key"></i> Новий пароль</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="reset-password-form">
+                            <div class="mb-3">
+                                <label for="new-password" class="form-label">Новий пароль</label>
+                                <input type="password" class="form-control" id="new-password" required minlength="8">
+                                <small class="text-muted">Мінімум 8 символів, велика літера, цифра, спецсимвол</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new-password2" class="form-label">Підтвердження пароля</label>
+                                <input type="password" class="form-control" id="new-password2" required>
+                            </div>
+                            <div class="alert alert-danger d-none" id="reset-error"></div>
+                            <div class="alert alert-success d-none" id="reset-success"></div>
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="bi bi-check-circle"></i> Змінити пароль
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Verification Result -->
+        <div id="verify-email-view" class="row justify-content-center d-none">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header text-white text-center" id="verify-header">
+                        <h4><i class="bi bi-envelope-check"></i> Підтвердження email</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="verify-loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Завантаження...</span>
+                            </div>
+                            <p class="mt-3">Перевірка посилання...</p>
+                        </div>
+                        <div id="verify-result" class="d-none">
+                            <i class="bi display-1" id="verify-icon"></i>
+                            <h5 class="mt-3" id="verify-message"></h5>
+                            <a href="/" class="btn btn-primary mt-3">
+                                <i class="bi bi-box-arrow-in-right"></i> Перейти до входу
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MFA Verification -->
+        <div id="mfa-view" class="row justify-content-center d-none">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-warning text-dark text-center">
+                        <h4><i class="bi bi-shield-check"></i> Двофакторна автентифікація</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- MFA Reason Block -->
+                        <div id="mfa-reason-block" class="alert alert-info mb-3 d-none">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div>
+                                    <strong>Причина MFA:</strong>
+                                    <span id="mfa-reason-text"></span>
+                                    <div id="mfa-trust-score" class="mt-1 d-none">
+                                        <small>Trust Score: <strong id="mfa-trust-value"></strong></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-center text-muted">
+                            Введіть код з додатку автентифікації або резервний код
+                        </p>
+                        <form id="mfa-form">
+                            <div class="mb-3">
+                                <label for="mfa-code" class="form-label">Код</label>
+                                <input type="text" class="form-control form-control-lg text-center" 
+                                       id="mfa-code" required maxlength="9" placeholder="000000">
+                            </div>
+                            <div class="alert alert-danger d-none" id="mfa-error"></div>
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="bi bi-check-circle"></i> Підтвердити
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard-view" class="d-none">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2>
+                        <i class="bi bi-speedometer2"></i> Панель керування
+                        <span class="badge bg-secondary" id="user-role"></span>
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Trust Score Card -->
+            <div class="row mb-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow" id="trust-score-card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-graph-up"></i> Trust Score</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="trust-score-display">
+                                <canvas id="trust-gauge" width="200" height="120"></canvas>
+                                <h2 id="trust-score-value">--</h2>
+                                <p id="trust-score-status" class="mb-0"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5><i class="bi bi-fingerprint"></i> Біометричний профіль</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Desktop Profile -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="fw-bold"><i class="bi bi-pc-display"></i> Профіль ПК</small>
+                                    <span id="desktop-ready-badge" class="badge bg-secondary">Збір даних</span>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Клавіатура</small>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-primary" id="keystroke-progress" style="width: 0%"></div>
+                                        </div>
+                                        <small id="keystroke-count" class="text-muted">0/30</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted d-block">Миша</small>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-primary" id="mouse-progress" style="width: 0%"></div>
+                                        </div>
+                                        <small id="mouse-count" class="text-muted">0/30</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mobile Profile -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="fw-bold"><i class="bi bi-phone"></i> Профіль мобільний</small>
+                                    <span id="mobile-ready-badge" class="badge bg-secondary">Збір даних</span>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <small class="text-muted d-block">Клавіатура</small>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-info" id="mobile-keystroke-progress" style="width: 0%"></div>
+                                        </div>
+                                        <small id="mobile-keystroke-count" class="text-muted">0/30</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block">Дотики</small>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-info" id="touch-progress" style="width: 0%"></div>
+                                        </div>
+                                        <small id="touch-count" class="text-muted">0/30</small>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-muted d-block">Сенсори</small>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-info" id="sensor-progress" style="width: 0%"></div>
+                                        </div>
+                                        <small id="sensor-count" class="text-muted">0/30</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Status Message -->
+                            <div id="profile-status-message" class="alert alert-info py-2 mb-0 small">
+                                <i class="bi bi-info-circle"></i> Потрібно більше зразків
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5><i class="bi bi-shield"></i> Безпека</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>TOTP</span>
+                                <span id="totp-status" class="badge"></span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary w-100" id="setup-totp-btn">
+                                Налаштувати TOTP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Biometric Training Area -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5><i class="bi bi-keyboard"></i> Тренувальна зона біометрії</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-2">
+                                Друкуйте будь-який текст у цьому полі для збору зразків динаміки натискань клавіш. 
+                                Рухайте мишкою для збору даних про динаміку руху.
+                            </p>
+                            <textarea 
+                                id="biometric-training-input" 
+                                class="form-control" 
+                                rows="3" 
+                                placeholder="Введіть будь-який текст для тренування біометричного профілю..."
+                            ></textarea>
+                            <div class="mt-2 d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <span id="keystroke-live-count">0</span> натискань у цій сесії
+                                </small>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('biometric-training-input').value = ''">
+                                    <i class="bi bi-trash"></i> Очистити
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Score History Chart -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5><i class="bi bi-graph-up-arrow"></i> Історія Trust Score (24 год)</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="trust-history-chart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Events -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5><i class="bi bi-clock-history"></i> Останні події</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm" id="events-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Подія</th>
+                                            <th>Час</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h5><i class="bi bi-laptop"></i> Активні сесії</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm" id="sessions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>IP</th>
+                                            <th>Trust</th>
+                                            <th>Остання активність</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOTP Setup Modal -->
+        <div class="modal fade" id="totp-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Налаштування TOTP</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p>Скануйте QR-код у додатку автентифікації:</p>
+                        <img id="totp-qr" class="mb-3" style="max-width: 200px;">
+                        <p class="small text-muted">Або введіть код вручну:</p>
+                        <code id="totp-secret" class="d-block mb-3"></code>
+                        <hr>
+                        <p class="text-danger small">Збережіть резервні коди:</p>
+                        <div id="backup-codes" class="mb-3 font-monospace"></div>
+                        <hr>
+                        <form id="totp-confirm-form">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="totp-verify-code" 
+                                       placeholder="Введіть код для підтвердження" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Підтвердити</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Курсова робота студента групи ТВ-52мп Стельмаха Дмитра Юрійовича на тему<br>
+                "Впровадження системи пасивної біометричної автентифікації на основі сенсорів мобільних пристроїв"</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/biometric-collector.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
