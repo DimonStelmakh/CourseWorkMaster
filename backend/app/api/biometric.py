@@ -281,14 +281,9 @@ async def get_current_trust_score(
         logger.warning(f"Trust score analysis failed: {e}")
         cached_score = await redis.get_trust_score(str(session.id))
         score = cached_score if cached_score else session.trust_score
-    
-    # Different thresholds for mobile vs desktop
-    if current_device == "mobile":
-        critical_threshold = 0.5
-        warning_threshold = 0.7
-    else:
-        critical_threshold = 0.6
-        warning_threshold = 0.8
+
+    critical_threshold = 0.5
+    warning_threshold = 0.7
     
     status = "normal"
     if score < critical_threshold:
